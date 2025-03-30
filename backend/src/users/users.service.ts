@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/user.schema';
@@ -18,11 +23,11 @@ export class UsersService {
       user.password = await this.encryptUserPassword(user.password);
       await user.save();
       return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        message: 'Failed to create user',
-      };
+    } catch (error: any) {
+      throw new HttpException(
+        'Could not create user !',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
